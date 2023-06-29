@@ -8,8 +8,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask objectsLayerMask;
     
-    private Vector3 _lastDesiredDirection;
-    private IInteractable _lastInteractableObject;
+    private IInteractable _nearestInteractableObject;
 
     private const float PLAYER_RADIUS = .7f;
     private const float PLAYER_HEIGHT = 2f;
@@ -23,37 +22,37 @@ public class Player : MonoBehaviour
     void Update()
     {
         HandleMovement();
-        HandleSelectableObjects();
+        HighlightNearestInteractableObjects();
     }
 
-    private void HandleSelectableObjects()
+    private void HighlightNearestInteractableObjects()
     {
         var objectsInRange = Physics.OverlapSphere(transform.position, PLAYER_INTERACT_DISTANCE, objectsLayerMask);
         if (objectsInRange.Length > 1)
         {
-            var nearestInteractableObject = objectsInRange.Where(c => c.gameObject.GetComponent<IInteractable>() != null)
+            var newNearestInteractableObject = objectsInRange.Where(c => c.gameObject.GetComponent<IInteractable>() != null)
                 .OrderBy(c => Vector3.Distance(transform.position, c.gameObject.transform.position))
                 .Select(c => c.gameObject)
                 .FirstOrDefault();
             
-            _lastInteractableObject?.Unselect();
-
-            if (nearestInteractableObject == null) 
+            _nearestInteractableObject?.Unselect();
+            
+            if (newNearestInteractableObject == null) 
                 return;
             
-            _lastInteractableObject = nearestInteractableObject.GetComponent<IInteractable>();
-            _lastInteractableObject.Select();
+            _nearestInteractableObject = newNearestInteractableObject.GetComponent<IInteractable>();
+            _nearestInteractableObject.Select();
         }
         else
         {
-            _lastInteractableObject?.Unselect();
-            _lastInteractableObject = null;
+            _nearestInteractableObject?.Unselect();
+            _nearestInteractableObject = null;
         }
     }
 
     private void OnInteractAction(object sender, EventArgs e)
     {
-        _lastInteractableObject?.Interact();
+        _nearestInteractableObject?.Interact();
     }
 
     private Vector3 GetPlayerDesiredDirection()
@@ -65,9 +64,6 @@ public class Player : MonoBehaviour
     private void HandleMovement()
     {
         var playerDesiredDirection = GetPlayerDesiredDirection();
-        if (playerDesiredDirection != Vector3.zero)
-            _lastDesiredDirection = playerDesiredDirection;
-        
         var playerPosition = transform.position;
         var maxDistance = moveSpeed * Time.deltaTime;
         
