@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -13,30 +14,38 @@ public class Player : MonoBehaviour
     private const float PLAYER_HEIGHT = 2f;
     private const float PLAYER_INTERACT_DISTANCE = 2f;
 
-    void Update()
+    private void Start()
     {
-        var playerInputDirection = gameInput.GetNormalizedMovementDirection();
-        var playerDesiredDirection = new Vector3(playerInputDirection.x, 0f, playerInputDirection.y);
-        
-        HandleMovement(playerDesiredDirection);
-        HandleInteraction(playerDesiredDirection);
+        gameInput.OnInteractAction += OnInteractAction;
     }
 
-    private void HandleInteraction(Vector3 playerDesiredDirection)
+    void Update()
     {
-        if (playerDesiredDirection != Vector3.zero)
-            _lastDesiredDirection = playerDesiredDirection;
-        
+        HandleMovement();
+    }
+
+    private void OnInteractAction(object sender, EventArgs e)
+    {
         var objectInArea = Physics.Raycast(transform.position, _lastDesiredDirection, out RaycastHit raycastHit, PLAYER_INTERACT_DISTANCE, counterLayerMask);
         if (objectInArea && raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
         {
             clearCounter.Interact();
         }
-            
     }
 
-    private void HandleMovement(Vector3 playerDesiredDirection)
+    private Vector3 GetPlayerDesiredDirection()
     {
+        var playerInputDirection = gameInput.GetNormalizedMovementDirection();
+        var playerDesiredDirection = new Vector3(playerInputDirection.x, 0f, playerInputDirection.y);
+        return playerDesiredDirection;
+    }
+
+    private void HandleMovement()
+    {
+        var playerDesiredDirection = GetPlayerDesiredDirection();
+        if (playerDesiredDirection != Vector3.zero)
+            _lastDesiredDirection = playerDesiredDirection;
+        
         var playerPosition = transform.position;
         var maxDistance = moveSpeed * Time.deltaTime;
 
