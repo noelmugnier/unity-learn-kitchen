@@ -7,8 +7,10 @@ public class Player : MonoBehaviour
     [SerializeField] private float moveSpeed = 7f;
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask objectsLayerMask;
+    [SerializeField] private Transform playerHoldingPoint;
     
     private IInteractable _nearestInteractableObject;
+    private KitchenObject _heldKitchenObject;
 
     private const float PLAYER_RADIUS = .7f;
     private const float PLAYER_HEIGHT = 2f;
@@ -28,31 +30,33 @@ public class Player : MonoBehaviour
     private void HighlightNearestInteractableObjects()
     {
         var objectsInRange = Physics.OverlapSphere(transform.position, PLAYER_INTERACT_DISTANCE, objectsLayerMask);
-        if (objectsInRange.Length > 1)
+        IInteractable newNearestInteractableObject = null;
+        if (objectsInRange.Length > 0)
         {
-            var newNearestInteractableObject = objectsInRange.Where(c => c.gameObject.GetComponent<IInteractable>() != null)
+            newNearestInteractableObject = objectsInRange
+                .Where(c => c.gameObject.GetComponent<IInteractable>() != null)
                 .OrderBy(c => Vector3.Distance(transform.position, c.gameObject.transform.position))
                 .Select(c => c.gameObject)
-                .FirstOrDefault();
-            
-            _nearestInteractableObject?.Unselect();
-            
-            if (newNearestInteractableObject == null) 
-                return;
-            
-            _nearestInteractableObject = newNearestInteractableObject.GetComponent<IInteractable>();
-            _nearestInteractableObject.Select();
+                .FirstOrDefault()?.GetComponent<IInteractable>();
         }
-        else
-        {
-            _nearestInteractableObject?.Unselect();
-            _nearestInteractableObject = null;
-        }
+
+        _nearestInteractableObject?.Unselect();
+        _nearestInteractableObject = newNearestInteractableObject;
+        _nearestInteractableObject?.Select();
     }
 
     private void OnInteractAction(object sender, EventArgs e)
     {
-        _nearestInteractableObject?.Interact();
+        if (_heldKitchenObject != null && _nearestInteractableObject != null)
+        {
+            if(_nearestInteractableObject.PutKitchenObject(_heldKitchenObject))
+                _heldKitchenObject = null;
+        }
+        else if(_heldKitchenObject == null)
+        {
+            if(_nearestInteractableObject?.Interact(playerHoldingPoint) == true)
+                _heldKitchenObject = playerHoldingPoint.GetComponentInChildren<KitchenObject>();
+        }
     }
 
     private Vector3 GetPlayerDesiredDirection()
