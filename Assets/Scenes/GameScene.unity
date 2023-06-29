@@ -493,6 +493,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 140862789869613958, guid: 3ed40315698857f25b308df8a25cefb9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5529445173156418487, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
       propertyPath: m_RootOrder
@@ -551,7 +556,7 @@ PrefabInstance:
     - target: {fileID: 8353089194576918206, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
       propertyPath: m_Name
-      value: ClearCounter (1)
+      value: SecondCounter
       objectReference: {fileID: 0}
     - target: {fileID: 8353089194576918206, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
@@ -922,7 +927,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 7
   gameInput: {fileID: 1429060721}
-  counterLayerMask:
+  objectsLayerMask:
     serializedVersion: 2
     m_Bits: 64
 --- !u!1001 &1861781609
@@ -1035,6 +1040,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 140862789869613958, guid: 3ed40315698857f25b308df8a25cefb9,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5529445173156418487, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
       propertyPath: m_RootOrder
@@ -1093,7 +1103,7 @@ PrefabInstance:
     - target: {fileID: 8353089194576918206, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
       propertyPath: m_Name
-      value: ClearCounter
+      value: FirstCounter
       objectReference: {fileID: 0}
     - target: {fileID: 8353089194576918206, guid: 3ed40315698857f25b308df8a25cefb9,
         type: 3}
