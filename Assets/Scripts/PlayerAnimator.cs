@@ -12,6 +12,6 @@ public class PlayerAnimator : MonoBehaviour
 
     private void Update()
     {
-        _animator.SetBool("IsWalking", player.IsWalking);
+        _animator.SetBool("IsWalking", player?.GetComponent<MoveHandler>()?.IsMoving ?? false);
     }
 }
