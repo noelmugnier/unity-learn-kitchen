@@ -2,12 +2,17 @@ using UnityEngine;
 
 public interface IInteractable
 {
-    void Interact(ObjectHolderHandler player);
+    void Interact(InteractionHandler player);
     void Select();
     void Unselect();
 }
 
+public interface IProcessable
+{
+    void Process(InteractionHandler player);
+}
+
 public interface ICanHoldKitchenObject
 {
-    Transform GetHoldingPoint();
+    Transform GetHoldingPointTransform();
 }

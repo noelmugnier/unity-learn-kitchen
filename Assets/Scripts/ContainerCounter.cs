@@ -15,7 +15,7 @@ public class ContainerCounter : BaseCounter
         spriteRenderer.sprite = kitchenObjectSO.Sprite;
     }
 
-    public override void Interact(ObjectHolderHandler player)
+    public override void Interact(InteractionHandler player)
     {
         if (player.IsHoldingObject)
             return;

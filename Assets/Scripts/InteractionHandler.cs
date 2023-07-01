@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ObjectHolderHandler : MonoBehaviour, ICanHoldKitchenObject
+public class InteractionHandler : MonoBehaviour, ICanHoldKitchenObject
 {
     private List<BaseCounter> _countersInRange = new ();
     
@@ -16,6 +16,7 @@ public class ObjectHolderHandler : MonoBehaviour, ICanHoldKitchenObject
     private void Start()
     {
         gameInput.OnInteractAction += OnInteractAction;
+        gameInput.OnProcessAction += OnProcessAction;
     }
 
     private void OnInteractAction(object sender, EventArgs e)
@@ -26,6 +27,16 @@ public class ObjectHolderHandler : MonoBehaviour, ICanHoldKitchenObject
         
         if(IsInSight(nearestCounter.transform))
             nearestCounter.Interact(this);
+    }
+
+    private void OnProcessAction(object sender, EventArgs e)
+    {
+        var nearestCounter = GetNearestCounter();
+        if (nearestCounter == null)
+            return;
+        
+        if(IsInSight(nearestCounter.transform) && nearestCounter is IProcessable processableCounter)
+            processableCounter.Process(this);
     }
 
     private void OnTriggerStay(Collider other)
@@ -104,7 +115,7 @@ public class ObjectHolderHandler : MonoBehaviour, ICanHoldKitchenObject
         HeldObject = null;
     }
 
-    public Transform GetHoldingPoint()
+    public Transform GetHoldingPointTransform()
     {
         return playerHoldingPoint.transform;
     }

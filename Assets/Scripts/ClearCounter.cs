@@ -15,7 +15,7 @@ public class ClearCounter : BaseCounter, ICanHoldKitchenObject
         base.Start();
     }
     
-    public override void Interact(ObjectHolderHandler holder)
+    public override void Interact(InteractionHandler holder)
     {
         switch (HasObjectOnTop)
         {
@@ -42,7 +42,7 @@ public class ClearCounter : BaseCounter, ICanHoldKitchenObject
         ObjectOnTop = null;
     }
 
-    public Transform GetHoldingPoint()
+    public Transform GetHoldingPointTransform()
     {
         return counterTopPoint.transform;
     }

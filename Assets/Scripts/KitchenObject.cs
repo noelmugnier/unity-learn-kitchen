@@ -4,7 +4,7 @@ public class KitchenObject : MonoBehaviour
 {
     public void AttachToParent(ICanHoldKitchenObject holder)
     {
-        transform.SetParent(holder.GetHoldingPoint(), false);
+        transform.SetParent(holder.GetHoldingPointTransform(), false);
         transform.localPosition = Vector3.zero;
     }
 }

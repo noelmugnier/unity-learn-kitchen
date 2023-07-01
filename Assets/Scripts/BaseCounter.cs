@@ -9,7 +9,7 @@ public abstract class BaseCounter : MonoBehaviour, IInteractable
         _selectedCounterVisual = gameObject.GetComponentInChildren<SelectedCounterVisual>(includeInactive:true);
     }
     
-    public abstract void Interact(ObjectHolderHandler player);
+    public abstract void Interact(InteractionHandler player);
 
     public void Select()
     {
