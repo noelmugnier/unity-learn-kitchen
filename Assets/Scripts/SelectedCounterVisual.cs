@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class SelectedCounterVisual : MonoBehaviour
 {
-    public void Enable()
+    public void ShowHighlight()
     {
         gameObject.SetActive(true);
     }
     
-    public void Disable()
+    public void HideHighlight()
     {
         gameObject.SetActive(false);
     }

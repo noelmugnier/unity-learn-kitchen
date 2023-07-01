@@ -14,12 +14,12 @@ public abstract class BaseCounter : MonoBehaviour, IInteractable
     public void Select()
     {
         if(_selectedCounterVisual != null)
-            _selectedCounterVisual.Enable();
+            _selectedCounterVisual.ShowHighlight();
     }
 
     public void Unselect()
     {
         if(_selectedCounterVisual != null)
-            _selectedCounterVisual.Disable();
+            _selectedCounterVisual.HideHighlight();
     }
 }
