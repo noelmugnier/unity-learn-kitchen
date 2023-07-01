@@ -18,7 +18,6 @@ public class MoveHandler : MonoBehaviour
 
     private void HandleMovement()
     {
-        Debug.Log("handling");
         var desiredDirection = GetDesiredDirection();
         var currentPosition = transform.position;
         var maxDistance = moveSpeed * Time.deltaTime;
@@ -34,7 +33,6 @@ public class MoveHandler : MonoBehaviour
         if (TryMove(currentPosition, upOrDownDirection, maxDistance))
             return;
         
-        Debug.Log("Is not moving");
         IsMoving = false;
     }
 

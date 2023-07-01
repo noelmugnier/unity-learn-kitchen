@@ -15,7 +15,7 @@ public class ContainerCounterVisual : MonoBehaviour
         containerCounter.OnObjectProduced += OnObjectProduced; 
     }
 
-    private void OnObjectProduced(object sender, OnObjectProducedArgs e)
+    private void OnObjectProduced(object sender, OnObjectHeldArgs e)
     {
         _animator.SetTrigger("OpenClose");
     }

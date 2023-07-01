@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class ObjectHolderHandler : MonoBehaviour
+public class ObjectHolderHandler : MonoBehaviour, ICanHoldKitchenObject
 {
     private List<BaseCounter> _countersInRange = new ();
     
     [SerializeField] private GameInput gameInput;
     [SerializeField] private Transform playerHoldingPoint;
     
-    public KitchenObject? HoldedObject { get; private set; }
-    public bool IsHoldingObject => HoldedObject != null;
+    public KitchenObject? HeldObject { get; private set; }
+    public bool IsHoldingObject => HeldObject != null;
     
     private void Start()
     {
@@ -58,10 +58,10 @@ public class ObjectHolderHandler : MonoBehaviour
         {
             case ClearCounter clearCounter:
                 clearCounter.OnObjectPlaced += OnObjectPlaced;
-                clearCounter.OnObjectTaken += OnObjectTaken;
+                clearCounter.OnObjectTaken += OnObjectHeld;
                 break;
             case ContainerCounter containerCounter:
-                containerCounter.OnObjectProduced += OnObjectProduced;
+                containerCounter.OnObjectProduced += OnObjectHeld;
                 break;
         }
         
@@ -87,24 +87,13 @@ public class ObjectHolderHandler : MonoBehaviour
         return angle <= viewAngle && Physics.Linecast(transform.position, target.position, out RaycastHit hitInfo) && hitInfo.transform == target;
     }
 
-    private void OnObjectProduced(object sender, OnObjectProducedArgs e)
-    {
-        AssignObject(e.KitchenObject);
-    }
-
-    private void OnObjectTaken(object sender, OnObjectTakenArgs e)
-    {
-        AssignObject(e.KitchenObject);
-    }
-
-    private void AssignObject(KitchenObject kitchenObject)
+    private void OnObjectHeld(object sender, OnObjectHeldArgs e)
     {
         if (IsHoldingObject)
             return;
 
-        HoldedObject = kitchenObject;
-        HoldedObject.transform.parent = playerHoldingPoint;
-        HoldedObject.transform.localPosition = Vector3.zero;
+        HeldObject = e.KitchenObject;
+        HeldObject.AttachToParent(this);
     }
 
     private void OnObjectPlaced(object sender, OnObjectPlacedArgs e)
@@ -112,6 +101,11 @@ public class ObjectHolderHandler : MonoBehaviour
         if (!IsHoldingObject)
             return;
 
-        HoldedObject = null;
+        HeldObject = null;
+    }
+
+    public Transform GetHoldingPoint()
+    {
+        return playerHoldingPoint.transform;
     }
 }

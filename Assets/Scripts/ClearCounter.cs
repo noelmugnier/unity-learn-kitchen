@@ -1,14 +1,14 @@
 using System;
 using UnityEngine;
 
-public class ClearCounter : BaseCounter
+public class ClearCounter : BaseCounter, ICanHoldKitchenObject
 {
     [SerializeField] protected Transform counterTopPoint;
     public KitchenObject? ObjectOnTop { get; private set; }
     public bool HasObjectOnTop => ObjectOnTop != null;
     
     public EventHandler<OnObjectPlacedArgs>? OnObjectPlaced;
-    public EventHandler<OnObjectTakenArgs>? OnObjectTaken;
+    public EventHandler<OnObjectHeldArgs>? OnObjectTaken;
 
     private new void Start()
     {
@@ -20,7 +20,7 @@ public class ClearCounter : BaseCounter
         switch (HasObjectOnTop)
         {
             case false when holder.IsHoldingObject:
-                PlaceObject(holder.HoldedObject!);
+                PlaceObject(holder.HeldObject!);
                 return;
             case true when !holder.IsHoldingObject:
                 TakeObject();
@@ -30,36 +30,21 @@ public class ClearCounter : BaseCounter
 
     private void PlaceObject(KitchenObject kitchenObject)
     {
-        if (HasObjectOnTop)
-            return;
-        
         ObjectOnTop = kitchenObject;
-        ObjectOnTop.transform.SetParent(counterTopPoint);
-        ObjectOnTop.transform.localPosition = Vector3.zero;
+        ObjectOnTop.AttachToParent(this);
         
-        OnObjectPlaced?.Invoke(this, new OnObjectPlacedArgs(kitchenObject));
+        OnObjectPlaced?.Invoke(this, new OnObjectPlacedArgs(ObjectOnTop));
     }
 
     private void TakeObject()
     {
-        if (!HasObjectOnTop)
-            return;
-
-        ObjectOnTop!.transform.SetParent(null);
-        ObjectOnTop.transform.localPosition = Vector3.zero;
-        
-        OnObjectTaken?.Invoke(this, new OnObjectTakenArgs(ObjectOnTop));
+        OnObjectTaken?.Invoke(this, new OnObjectHeldArgs(ObjectOnTop));
         ObjectOnTop = null;
     }
-}
 
-public class OnObjectTakenArgs : EventArgs
-{
-    public KitchenObject KitchenObject { get; }
-
-    public OnObjectTakenArgs(KitchenObject kitchenObject)
+    public Transform GetHoldingPoint()
     {
-        KitchenObject = kitchenObject;
+        return counterTopPoint.transform;
     }
 }
 
